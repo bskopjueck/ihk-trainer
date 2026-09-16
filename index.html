@@ -537,12 +537,18 @@ body.locked>*:not(.lock){display:none !important}
   <main class="lockcard">
     <div class="locklogo"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6.5 20V9.5L12 5l5.5 4.5V20"/><path d="M10 20v-5h4v5M9.7 11.4h4.6"/></svg></div>
     <h1>IHK-Prüfungstrainer</h1>
-    <p class="locksub">Immobilienkaufmann/-frau · Bitte deinen Zugangscode eingeben.</p>
+    <p class="locksub">Immobilienkaufmann/-frau</p>
     <form id="lgform" autocomplete="on">
       <label for="lgcode">Zugangscode</label>
-      <input id="lgcode" name="code" type="password" autocomplete="current-password"
+      <input id="lgcode" name="code" type="password" inputmode="numeric" autocomplete="current-password"
              autocapitalize="off" autocorrect="off" spellcheck="false" required>
       <button id="lgbtn" type="submit">Entsperren</button>
+    </form>
+    <form id="gcform" hidden>
+      <label for="gccode">Geräte-Code</label>
+      <input id="gccode" type="text" autocapitalize="off" autocorrect="off" spellcheck="false"
+             placeholder="Code oder ganzen Link einfügen">
+      <button type="submit">Gerät einrichten</button>
     </form>
     <p id="lgmsg"></p>
     <p class="lockfoot">Die Inhalte sind verschlüsselt gespeichert und werden erst<br>hier in deinem Browser lesbar gemacht.</p>
@@ -564,7 +570,7 @@ body.locked>*:not(.lock){display:none !important}
 <main class="wrap" id="view" tabindex="-1"></main>
 <nav class="tab" id="navTab" aria-label="Hauptnavigation"></nav>
 
-<script>window.__V="202609161400";</script>
+<script>window.__V="202609161418";</script>
 <script>
 /* Entsperren und Inhalte laden.
    Die Prüfungsinhalte liegen verschlüsselt in data.bin; der Schlüssel entsteht
@@ -578,11 +584,14 @@ var el=function(id){ return document.getElementById(id); };
    steckt im Link und wird beim ersten Öffnen im Gerät hinterlegt –
    danach genügt die PIN. */
 function kennung(){
-  var m=(location.hash||'').match(/[#&]k=([A-Za-z0-9_-]{8,})/);
-  if(m){ try{ localStorage.setItem(KEYK,m[1]); }catch(e){}
-    history.replaceState(null,'',location.pathname+location.search);
-    return m[1]; }
+  var m=(location.hash||'').match(/[#&]k=([A-Za-z0-9_-]{8,})/)
+     || (location.search||'').match(/[?&]k=([A-Za-z0-9_-]{8,})/);
+  if(m){ merken(m[1]); return m[1]; }
   try{ return localStorage.getItem(KEYK)||''; }catch(e){ return ''; }
+}
+function merken(k){
+  try{ localStorage.setItem(KEYK,k); }catch(e){}
+  try{ history.replaceState(null,'',location.pathname); }catch(e){}
 }
 
 function setMsg(t,bad){ var m=el('lgmsg'); if(!m) return;
@@ -647,9 +656,17 @@ async function tryCode(code,remember){
 document.addEventListener('DOMContentLoaded',function(){
   var saved=null; try{ saved=localStorage.getItem(KEYC); }catch(e){}
   if(!kennung()){
-    setMsg('Dieses Gerät kennt den Trainer noch nicht. Bitte einmal den vollständigen Link öffnen, den du bekommen hast.',true);
-    var b0=el('lgbtn'); if(b0) b0.disabled=true;
-    // Falls der vollständige Link bei offener Seite aufgerufen wird
+    // Das Gerät kennt den Trainer noch nicht: Geräte-Code abfragen.
+    // Er lässt sich eintippen oder einfügen – der Link ist nur der bequeme Weg.
+    var pf=el('lgform'); if(pf) pf.hidden=true;
+    var gb=el('gcform'); if(gb) gb.hidden=false;
+    var gi=el('gccode'); if(gi) gi.focus();
+    setMsg('Dieses Gerät ist noch nicht eingerichtet. Trag einmal deinen Geräte-Code ein – danach genügt die PIN.');
+    var gf=el('gcform');
+    if(gf) gf.addEventListener('submit',function(ev){ ev.preventDefault();
+      var v=(el('gccode').value||'').trim().replace(/^.*[#?&]k=/,'');
+      if(v.length<8){ setMsg('Dieser Geräte-Code ist zu kurz.',true); return; }
+      merken(v); location.reload(); });
     addEventListener('hashchange',function(){ if(kennung()) location.reload(); });
     return;
   }
