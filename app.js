@@ -134,6 +134,13 @@ function migrate(){
   if(P.day.d!==today()) P.day={d:today(),xp:0,min:0,items:0};
 }
 migrate();
+/* Korrektur 09/2026: Bei diesen Aufgaben war die automatische Prüfung fehlerhaft
+   (Datum als Zahl gelesen, mehrteilige Lösung auf eine Zahl verkürzt, Freitext-Stichwörter zu großzügig).
+   Dort gespeicherte Ergebnisse sind nicht verlässlich und werden neu abgefragt. */
+(function(){ if(P.fix2609) return;
+  const ids=["2019_imwi_1.1", "2019_imwi_1.2", "2019_imwi_1.3", "2019_imwi_2.1", "2019_imwi_2.2", "2019_imwi_2.3.1", "2019_imwi_2.3.2", "2019_imwi_3.1", "2019_imwi_3.2", "2019_imwi_3.3", "2019_imwi_3.4", "2019_imwi_3.5", "2019_imwi_4.1", "2019_imwi_4.2", "2019_imwi_4.3", "2019_imwi_5.1", "2019_imwi_5.2", "2019_imwi_5.3.1", "2019_imwi_5.3.2", "2019_imwi_5.4", "2019_imwi_6.1", "2019_imwi_6.2.1", "2019_imwi_6.2.2", "2019_imwi_6.3", "2019_imwi_6.4.1", "2019_imwi_6.4.2", "2019_imwi_6.4.3", "2019_imwi_7.1", "2019_imwi_7.2", "2019_imwi_7.3", "2019_imwi_8.1", "2019_imwi_8.2", "2019_imwi_8.3", "2019_imwi_8.4", "2019_imwi_9.1", "2019_imwi_9.2", "2020_imwi_1.1", "2020_imwi_1.2", "2020_imwi_1.3", "2020_imwi_2.1", "2020_imwi_2.2", "2020_imwi_2.3", "2020_imwi_2.4", "2020_imwi_3.1", "2020_imwi_3.2", "2020_imwi_3.3", "2020_imwi_4.1", "2020_imwi_4.2", "2020_imwi_4.3", "2020_imwi_5.1", "2020_imwi_5.2", "2020_imwi_5.3", "2020_imwi_6.1", "2020_imwi_6.2", "2020_imwi_6.3", "2020_imwi_6.4", "2020_imwi_6.5", "2020_imwi_6.6", "2020_imwi_6.7", "2020_imwi_6.8", "2020_imwi_6.9", "2020_imwi_7.1", "2020_imwi_7.2", "2020_imwi_7.3.1", "2020_imwi_7.3.2", "2020_imwi_7.4", "2020_imwi_7.5", "2020_ksk_18", "2020_ksk_29", "2021_imwi_1.1", "2021_imwi_1.2", "2021_imwi_1.3", "2021_imwi_2.1", "2021_imwi_3.1", "2021_imwi_3.2", "2021_imwi_4.1", "2021_imwi_4.2.1", "2021_imwi_4.2.2", "2021_imwi_5.1", "2021_imwi_5.2.1", "2021_imwi_5.2.2", "2021_imwi_5.3.1", "2021_imwi_5.3.2", "2021_imwi_5.3.3", "2021_imwi_5.3.4", "2021_imwi_5.3.5", "2021_imwi_6.1", "2021_imwi_6.2", "2021_imwi_6.3", "2021_imwi_6.4.1", "2021_imwi_6.4.2", "2021_imwi_6.5", "2021_imwi_6.6", "2021_imwi_6.7", "2021_imwi_6.8", "2021_imwi_7.1", "2021_imwi_7.2.1", "2021_imwi_7.2.2", "2021_imwi_8.1", "2021_imwi_8.2", "2021_imwi_8.3", "2021_imwi_8.4", "2022_imwi_1.1", "2022_imwi_1.2", "2022_imwi_2.1", "2022_imwi_2.2", "2022_imwi_3.1", "2022_imwi_3.2", "2022_imwi_3.3", "2022_imwi_3.4.1", "2022_imwi_3.4.2", "2022_imwi_3.5", "2022_imwi_3.6", "2022_imwi_3.7", "2022_imwi_4.1", "2022_imwi_4.2", "2022_imwi_4.3", "2022_imwi_4.4", "2022_imwi_4.5.1", "2022_imwi_4.5.2", "2022_imwi_4.5.3", "2022_imwi_5.1", "2022_imwi_5.2", "2022_imwi_5.3", "2022_imwi_6.1", "2022_imwi_6.2", "2022_imwi_6.3", "2022_imwi_7.1", "2022_imwi_7.2", "2022_imwi_7.3", "2022_imwi_7.4", "2022_imwi_7.5", "2022_imwi_8.1", "2022_imwi_8.2", "2022_imwi_8.3", "2022_imwi_8.4.1", "2022_imwi_8.4.2", "2022_ksk_12", "2022_ksk_13", "s2023_imwi_1.1", "s2023_imwi_1.2", "s2023_imwi_1.3", "s2023_imwi_2.1", "s2023_imwi_2.2", "s2023_imwi_2.3", "s2023_imwi_3.1", "s2023_imwi_3.2", "s2023_imwi_3.3", "s2023_imwi_4.1", "s2023_imwi_4.2", "s2023_imwi_4.3", "s2023_imwi_4.4", "s2023_imwi_4.5.1", "s2023_imwi_4.5.2", "s2023_imwi_5.1", "s2023_imwi_5.2.1", "s2023_imwi_5.2.2", "s2023_imwi_5.2.3", "s2023_imwi_5.2.4", "s2023_imwi_5.3", "s2023_imwi_6.1", "s2023_imwi_6.2", "s2023_imwi_7.2", "s2023_imwi_7.3.1", "s2023_imwi_7.3.2", "s2023_imwi_7.4", "s2023_imwi_8.1.1", "s2023_imwi_8.1.2", "s2023_imwi_8.2.1", "s2023_imwi_8.2.2", "s2023_imwi_8.3", "s2023_imwi_8.4", "s2023_ksk_24", "s2023_ksk_8", "s2024_imwi_1.1", "s2024_imwi_1.2", "s2024_imwi_2.1", "s2024_imwi_2.2", "s2024_imwi_3.1", "s2024_imwi_3.2.1", "s2024_imwi_3.2.2", "s2024_imwi_3.3.1", "s2024_imwi_3.3.2", "s2024_imwi_4", "s2024_imwi_5.1", "s2024_imwi_5.2", "s2024_imwi_5.3", "s2024_imwi_6.1.1", "s2024_imwi_6.1.2", "s2024_imwi_6.2", "s2024_imwi_6.3.1", "s2024_imwi_6.3.2", "s2024_imwi_7.1", "s2024_imwi_7.2", "s2024_imwi_7.3", "s2024_imwi_7.4", "s2024_imwi_7.5", "s2024_imwi_8.1", "s2024_imwi_8.2.1", "s2024_imwi_8.2.2", "s2024_imwi_8.2.3", "s2024_imwi_8.3.1", "s2024_imwi_8.3.2", "s2024_imwi_8.4", "s2024_imwi_8.5", "s2024_ksk_23", "s2024_ksk_25", "s2024_ksk_6", "s2024_ksk_8", "s2025_imwi_1.1", "s2025_imwi_1.2", "s2025_imwi_2.1", "s2025_imwi_2.2", "s2025_imwi_2.3", "s2025_imwi_3.1", "s2025_imwi_3.2", "s2025_imwi_3.3", "s2025_imwi_4.1.1", "s2025_imwi_4.1.2", "s2025_imwi_4.2", "s2025_imwi_4.3", "s2025_imwi_4.4", "s2025_imwi_4.5", "s2025_imwi_4.6", "s2025_imwi_4.7.1", "s2025_imwi_4.7.2", "s2025_imwi_5.1", "s2025_imwi_5.2", "s2025_imwi_5.3", "s2025_imwi_5.4", "s2025_imwi_5.5", "s2025_imwi_6.1", "s2025_imwi_6.2", "s2025_imwi_6.3", "s2025_imwi_7.1", "s2025_imwi_7.2", "s2025_imwi_7.3", "s2025_ksk_20", "w1920_imwi_1.1", "w1920_imwi_1.2", "w1920_imwi_1.3", "w1920_imwi_2.1", "w1920_imwi_2.2", "w1920_imwi_2.3", "w1920_imwi_2.4", "w1920_imwi_3.1", "w1920_imwi_3.2", "w1920_imwi_3.3", "w1920_imwi_3.4", "w1920_imwi_3.5", "w1920_imwi_4.1", "w1920_imwi_4.2", "w1920_imwi_4.3", "w1920_imwi_5.1", "w1920_imwi_5.2.1", "w1920_imwi_5.2.2", "w1920_imwi_5.2.3", "w1920_imwi_5.3", "w1920_imwi_5.4", "w1920_imwi_5.5", "w1920_imwi_6.1", "w1920_imwi_6.3", "w1920_imwi_7.1", "w1920_imwi_7.2", "w1920_imwi_7.3", "w1920_imwi_7.4", "w1920_imwi_8.1", "w1920_imwi_8.2", "w1920_imwi_8.3", "w1920_imwi_8.4", "w1920_imwi_8.5", "w1920_imwi_8.6", "w1920_ksk_24", "w2021_imwi_1.1", "w2021_imwi_1.2", "w2021_imwi_1.3", "w2021_imwi_2.1", "w2021_imwi_2.2", "w2021_imwi_2.3", "w2021_imwi_2.4", "w2021_imwi_2.5", "w2021_imwi_3.1", "w2021_imwi_3.2", "w2021_imwi_3.3", "w2021_imwi_4.1", "w2021_imwi_4.2.1", "w2021_imwi_4.2.2", "w2021_imwi_4.3", "w2021_imwi_4.4", "w2021_imwi_4.5", "w2021_imwi_5.1", "w2021_imwi_5.2", "w2021_imwi_5.3", "w2021_imwi_5.4", "w2021_imwi_5.5", "w2021_imwi_6.1", "w2021_imwi_6.2", "w2021_imwi_6.3", "w2021_imwi_6.4", "w2021_imwi_6.5", "w2021_imwi_7.1", "w2021_imwi_7.2", "w2021_imwi_7.3.1", "w2021_imwi_7.3.2", "w2021_imwi_7.4", "w2021_imwi_8.1", "w2021_imwi_8.2", "w2021_imwi_8.3", "w2122_imwi_1.1", "w2122_imwi_1.2", "w2122_imwi_1.3", "w2122_imwi_2.1", "w2122_imwi_2.2.1", "w2122_imwi_2.2.2", "w2122_imwi_2.3", "w2122_imwi_3.1", "w2122_imwi_3.2", "w2122_imwi_3.3.1", "w2122_imwi_3.3.2", "w2122_imwi_4.1", "w2122_imwi_4.2.1", "w2122_imwi_4.2.2", "w2122_imwi_4.2.3", "w2122_imwi_4.3", "w2122_imwi_4.4.1", "w2122_imwi_4.4.2", "w2122_imwi_5.1", "w2122_imwi_5.2", "w2122_imwi_5.3", "w2122_imwi_6.1", "w2122_imwi_6.2", "w2122_imwi_6.3", "w2122_imwi_7.1", "w2122_imwi_7.3", "w2122_imwi_7.4", "w2122_ksk_26", "w2223_imwi_1.1", "w2223_imwi_1.2", "w2223_imwi_2.1", "w2223_imwi_2.2", "w2223_imwi_2.3", "w2223_imwi_3.1", "w2223_imwi_3.2", "w2223_imwi_3.3", "w2223_imwi_3.4.1", "w2223_imwi_3.4.2", "w2223_imwi_3.5", "w2223_imwi_4.1", "w2223_imwi_4.2", "w2223_imwi_5.1", "w2223_imwi_5.2", "w2223_imwi_5.3", "w2223_imwi_5.4", "w2223_imwi_5.5", "w2223_imwi_5.6", "w2223_imwi_6.1", "w2223_imwi_6.2.1", "w2223_imwi_6.2.2", "w2223_imwi_6.2.3", "w2223_imwi_7.1", "w2223_imwi_7.2", "w2223_imwi_7.3.1", "w2223_imwi_7.3.2", "w2223_imwi_7.3.3", "w2223_imwi_7.4.1", "w2223_imwi_7.4.2", "w2223_imwi_7.5", "w2223_imwi_7.6", "w2324_imwi_1.1", "w2324_imwi_1.2", "w2324_imwi_2.1", "w2324_imwi_2.2", "w2324_imwi_2.3", "w2324_imwi_3.1", "w2324_imwi_3.2", "w2324_imwi_3.3.1", "w2324_imwi_3.3.2", "w2324_imwi_3.4", "w2324_imwi_3.5", "w2324_imwi_4.1", "w2324_imwi_4.2", "w2324_imwi_4.3", "w2324_imwi_5.1", "w2324_imwi_5.2", "w2324_imwi_5.3.1", "w2324_imwi_5.3.2", "w2324_imwi_5.3.3", "w2324_imwi_6.1", "w2324_imwi_6.2", "w2324_imwi_6.3", "w2324_imwi_6.4", "w2324_imwi_7.1", "w2324_imwi_7.2.1", "w2324_imwi_7.2.2", "w2324_imwi_7.2.3", "w2324_imwi_7.3", "w2324_imwi_7.4", "w2324_imwi_7.5", "w2324_imwi_7.6", "w2324_ksk_14", "w2324_ksk_15", "w2425_imwi_1.1", "w2425_imwi_1.2", "w2425_imwi_1.3", "w2425_imwi_2.1.1", "w2425_imwi_2.1.2", "w2425_imwi_2.2", "w2425_imwi_2.3", "w2425_imwi_2.4", "w2425_imwi_3.1", "w2425_imwi_3.2", "w2425_imwi_3.3", "w2425_imwi_3.4", "w2425_imwi_3.5", "w2425_imwi_4.1.1", "w2425_imwi_4.1.2", "w2425_imwi_4.2", "w2425_imwi_4.3", "w2425_imwi_5", "w2425_imwi_6.1", "w2425_imwi_6.2.1", "w2425_imwi_6.2.2", "w2425_imwi_6.3", "w2425_imwi_6.4", "w2425_imwi_6.5", "w2425_imwi_6.6", "w2425_imwi_7.1.1", "w2425_imwi_7.1.2", "w2425_imwi_7.2", "w2425_imwi_7.3", "w2425_imwi_7.4", "w2425_imwi_7.5", "w2425_ksk_11", "w2425_ksk_22", "w2526_imwi_1.1", "w2526_imwi_1.2", "w2526_imwi_2.1", "w2526_imwi_2.2", "w2526_imwi_2.3", "w2526_imwi_3.1", "w2526_imwi_3.2.1", "w2526_imwi_3.2.2", "w2526_imwi_3.3.1", "w2526_imwi_3.3.2", "w2526_imwi_3.3.3", "w2526_imwi_4", "w2526_imwi_5.1", "w2526_imwi_5.2", "w2526_imwi_5.3", "w2526_imwi_6.1", "w2526_imwi_6.2", "w2526_imwi_6.3", "w2526_imwi_6.4.1", "w2526_imwi_6.4.2", "w2526_imwi_6.4.3", "w2526_imwi_6.4.4", "w2526_imwi_6.5", "w2526_imwi_7.1", "w2526_imwi_7.2", "w2526_imwi_7.3", "w2526_imwi_8.1", "w2526_imwi_8.2", "w2526_imwi_8.3", "w2526_imwi_8.4", "w2526_imwi_8.5", "w2526_imwi_8.6", "w2526_ksk_17"];
+  ids.forEach(id=>{ delete P.srs['t|'+id]; delete P.res[id]; });
+  P.fix2609=1; try{ localStorage.setItem(KEY,JSON.stringify(P)); }catch(e){} })();
 let _svT;
 function save(){ clearTimeout(_svT); _svT=setTimeout(()=>{
   try{ localStorage.setItem(KEY,JSON.stringify(P)); }
@@ -292,9 +299,38 @@ function ptTok(p){ if(_pc.has(p))return _pc.get(p); const s=cTok((p.titel||'')+'
 function nearness(ans,p){ const A=cTok(ans),B=ptTok(p); if(!B.size||!A.size) return 0;
   let h=0; B.forEach(t=>{ if(A.has(t))h++; });
   return Math.max(h/B.size, 2*h/(A.size+B.size)*1.3); }
+/* Was schon in Frage oder Situation steht, beweist nichts: Solche Stichwörter
+   zählen bei der Bewertung nicht. Ein Lösungspunkt, der sich nur über solche
+   Wörter erkennen ließe, gilt als „nicht automatisch prüfbar". */
+const _lpq=new Map();
+function lpPruef(it){
+  if(_lpq.has(it.id)) return _lpq.get(it.id);
+  const given=(it.situation||'')+' '+(it.frage||'');
+  const gTok=cTok(given);
+  const res=(it.lp||[]).map(p=>{
+    const keys=(p.keys||[]).filter(g=>g.length&&!grpHit(given,g));
+    const tok=new Set([...ptTok(p)].filter(t=>!gTok.has(t)));
+    return {keys, tok, pruefbar: keys.length>0};
+  });
+  const out={pts:res, gTok, auto:!it.lp_auto};
+  _lpq.set(it.id,out); return out; }
+function nearQ(ans,q,gTok){ if(!q.tok.size) return 0;
+  const A=new Set([...cTok(ans)].filter(t=>!gTok.has(t))); if(!A.size) return 0;
+  let h=0; q.tok.forEach(t=>{ if(A.has(t))h++; });
+  return q.tok.size<2 ? 0 : Math.max(h/q.tok.size, 2*h/(A.size+q.tok.size)*1.3); }
+/* Kann diese Aufgabe verlässlich automatisch bewertet werden? */
+function autoBewertbar(it){
+  if(!it.lp||!it.lp.length||it.auto===false) return false;
+  const q=lpPruef(it); if(!q.auto) return false;
+  const need=it.n_gefordert||Math.min(it.lp.length,3);
+  return q.pts.filter(x=>x.pruefbar).length>=need; }
 function gradeText(it,ans){
   const pts=it.lp||[];
-  const marks=pts.map(p=>ptHit(ans,p)?2:(nearness(ans,p)>=0.34?1:0));
+  if(!autoBewertbar(it)) return {score:0,selbst:true,marks:[],nF:0,nP:0,need:0,warn:[]};
+  const Q=lpPruef(it);
+  // Nur echte Stichwort-Treffer zählen (mit Tippfehler- und Wortformtoleranz).
+  // Bloße Wortähnlichkeit gab auch falschen Antworten halbe Punkte und entfällt.
+  const marks=Q.pts.map(q=>(q.pruefbar&&q.keys.some(g=>grpHit(ans,g)))?2:0);
   const nF=marks.filter(m=>m===2).length, nP=marks.filter(m=>m===1).length;
   const need=it.n_gefordert||(pts.length?Math.min(pts.length,3):1);
   let sc=pts.length?Math.min(1,(nF+0.5*nP)/need):0;
@@ -302,7 +338,25 @@ function gradeText(it,ans){
   if(warn.length) sc=Math.max(0,sc-0.2*warn.length);
   if(norm(ans).replace(/\s/g,'').length<3) sc=0;
   return {score:Math.max(0,Math.min(1,sc)),marks,nF,nP,need,warn}; }
-function parseNum(s){ if(s==null)return NaN; let t=String(s).replace(/[^\d,.\-]/g,'').trim(); if(!t)return NaN;
+const DATE_IN=/^\s*\d{1,2}\.\d{1,2}\.\d{2,4}\s*$/;
+function parseDate(s){ const m=String(s||'').match(/(\d{1,2})\.(\d{1,2})\.(\d{4}|\d{2})(?!\d)/); if(!m) return null;
+  let y=+m[3]; if(y<100) y+=2000; const d=+m[1], mo=+m[2];
+  if(d<1||d>31||mo<1||mo>12) return null; return pad(d)+'.'+pad(mo)+'.'+y; }
+/* Zulässige Zahlenwerte einer Lösung. „855,00 oder 71,25" ergibt zwei Werte.
+   Folgefehler-Formeln („oder Algo …") hängen von eigenen Vorergebnissen ab und
+   werden hier bewusst nicht als feste Lösung gewertet. */
+function solNums(sol){ return String(sol||'').split(/\s+oder\s+/i)
+  .map(x=>x.replace(/\([^)]*\)/g,'').trim())
+  .filter(x=>/^-?[\d. ]+(,\d+)?\s*(€|EUR|%|m²)?$/.test(x))
+  .map(x=>parseNum(x.replace(/\s/g,''))).filter(n=>!isNaN(n)); }
+function decs(s){ const m=String(s).match(/,(\d+)\s*\D*$/); return m?m[1].length:0; }
+function kskZahlOk(a,ansStr,b){
+  if(Math.abs(a-b)<=0.011) return true;
+  const db=(String(b).split('.')[1]||'').length, da=decs(ansStr);
+  if(db>=3 && da>=1 && da<db){ const f=Math.pow(10,da); return Math.abs(Math.round(b*f)/f-a)<1e-9; }
+  return false; }
+function parseNum(s){ if(s==null)return NaN; if(DATE_IN.test(String(s))) return NaN;
+  let t=String(s).replace(/[^\d,.\-]/g,'').trim(); if(!t)return NaN;
   if(t.includes(',')) t=t.replace(/\./g,'').replace(',','.');
   else if(/\.\d{3}(\D|$)/.test(t)&&!/\.\d{1,2}$/.test(t)) t=t.replace(/\./g,'');
   return parseFloat(t); }
@@ -312,9 +366,9 @@ function gradeKsk(it,ans){
   const sol=String(it.loesung||'').trim();
   if(/keine auswertung/i.test(sol)) return {score:1,info:'Diese Aufgabe wurde in der Original-Prüfung nicht gewertet.'};
   const t=it.typ;
-  if(t==='zahl'){ const a=parseNum(ans),b=parseNum(sol);
-    if(isNaN(a)||isNaN(b)) return {score:norm(ans)===norm(sol)?1:0};
-    return {score:Math.abs(a-b)<=Math.max(0.011,Math.abs(b)*0.0005)?1:0}; }
+  if(t==='zahl'){ const a=parseNum(ans), bs=solNums(sol);
+    if(isNaN(a)||!bs.length) return {score:norm(ans)===norm(sol)?1:0};
+    return {score:bs.some(b=>kskZahlOk(a,ans,b))?1:0}; }
   if(t==='datum') return {score:seqOf(ans)===seqOf(sol)?1:0};
   if(t==='mc_einfach'||t==='mc_mehrfach') return {score:setOf(ans)===setOf(sol)?1:0};
   if(t==='reihenfolge') return {score:sol.split(/\s+oder\s+/i).map(seqOf).includes(seqOf(ans))?1:0};
@@ -454,7 +508,7 @@ function gesamtReife(){
     v=v*0.85+sim*0.15; }
   return Math.max(0,Math.min(1,v));
 }
-const isNum = i => i.typ==='rechnen' || (i.bereich!==BER_IM && i.typ==='zahl') || i.zahl!=null;
+const isNum = i => i.zahl!=null || !!i.datum || (i.bereich!==BER_IM && i.typ==='zahl' && solNums(i.loesung).length>0);
 
 /* ═══════════════ SCHWÄCHEN ═══════════════ */
 function themenStat(){
@@ -614,7 +668,8 @@ function mkMC(st){
   const L=modL(st.m), q=L.mc[st.i]; if(!q) return null;
   const ord=shuffle([0,1,2], st.i*7+hashStr(st.m));
   return {kind:'mc', key:qk(st.m,st.i), mod:st.m, lek:q.lektion,
-    q:md(q.frage), ctx:'',
+    q:md(q.frage),
+    ctx: q.situation ? '<b>Ausgangslage:</b> '+md(q.situation) : '',
     body:'<div id="opts">'+ord.map((oi,n)=>'<button class="opt" data-o="'+oi+'"><span class="k">'+'ABC'[n]+'</span><span>'+inl(q.optionen[oi])+'</span></button>').join('')+'</div>',
     bind(root,done){ root.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
       const ch=+b.dataset.o, right=ch===q.richtig;
@@ -633,7 +688,7 @@ function mkTF(st){
   const oi=useRight?q.richtig:wrongIdx[hashStr(st.m+'x'+st.i)%wrongIdx.length];
   const soll=useRight;
   return {kind:'tf', key:qk(st.m,st.i), mod:st.m, lek:q.lektion,
-    ctx:'<b>Frage:</b> '+esc(q.frage),
+    ctx:(q.situation?'<b>Ausgangslage:</b> '+md(q.situation)+'<br>':'')+'<b>Frage:</b> '+esc(q.frage),
     q:'<p>Ist diese Antwort richtig?</p><p style="font-weight:700;color:var(--txt)">'+inl(q.optionen[oi])+'</p>',
     body:'<div class="tf"><button data-v="1">'+ic('check',22)+'RICHTIG</button><button data-v="0">'+ic('x',22)+'FALSCH</button></div>',
     bind(root,done){ root.querySelectorAll('.tf button').forEach(b=>b.onclick=()=>{
@@ -760,9 +815,12 @@ function mkOrder(st){
 /* ---------- Rechenaufgabe (Original-IHK-Aufgabe) ---------- */
 function mkNum(st){
   const it=BY_ID[st.id]; if(!it) return null;
-  const soll = it.zahl!=null ? it.zahl : parseNum(it.loesung);
-  if(isNaN(soll)) return null;
-  const tol = it.tol!=null ? Math.max(it.tol, Math.abs(soll)*0.0006) : Math.max(0.011,Math.abs(soll)*0.0006);
+  if(it.datum) return mkDatum(it);
+  const alts = it.zahl!=null ? [it.zahl] : (it.bereich!==BER_IM && it.typ==='zahl' ? solNums(it.loesung) : []);
+  if(!alts.length) return null;
+  const soll=alts[0];
+  const tolOf=a=> Math.max(0.011, Math.abs(a)*0.000001);   // 1 Cent Rundungsdifferenz
+  const tol=tolOf(soll);
   const einheit = it.einheit || (/€/.test(String(it.ergebnis||it.loesung))?'€':/%/.test(String(it.ergebnis||it.loesung))?'%':'');
   const hint=String(it.loesung||'').split('\n').filter(x=>x.trim()).slice(0,2).join(' · ').slice(0,180);
   return {kind:'num', key:tk(it.id), item:it, mod:it.modul,
@@ -778,15 +836,36 @@ function mkNum(st){
       if(hb) hb.onclick=()=>{ root.querySelector('#nhb').innerHTML=
         '<div class="callout formel" style="margin-top:12px"><span class="cl">'+ic('alert',12)+' Ansatz</span>'+esc(hint)+'</div>';
         hb.disabled=true; };
-      const sub=()=>{ const v=parseNum(inp.value); if(isNaN(v)) return toast('Bitte eine Zahl eintragen.');
-        const diff=Math.abs(v-soll), right=diff<=tol;
+      const sub=()=>{ if(DATE_IN.test(inp.value)) return toast('Hier ist ein Betrag gefragt, kein Datum.');
+        const v=parseNum(inp.value); if(isNaN(v)) return toast('Bitte eine Zahl eintragen.');
+        const diff=Math.abs(v-soll), right= it.zahl!=null ? alts.some(a=>Math.abs(v-a)<=tolOf(a))
+                                                          : alts.some(a=>kskZahlOk(v,inp.value,a));
         const nah=!right && diff<=Math.abs(soll)*0.05;
         inp.disabled=true; root.querySelector('#ns').disabled=true;
         done({right, score:right?1:(nah?0.35:0),
           fh:right?'Richtig gerechnet':(nah?'Knapp daneben':'Noch nicht'),
           deine:right?'':fmtNum(v)+(einheit?' '+einheit:''),
-          loesung:fmtNum(soll)+(einheit?' '+einheit:''),
+          loesung:alts.map(a=>fmtNum(a)+(einheit?' '+einheit:'')).join(' oder '),
           rechenweg:it.loesung, warum:it.erklaerung||''}); };
+      root.querySelector('#ns').onclick=sub;
+      inp.onkeydown=e=>{ if(e.key==='Enter') sub(); }; } };
+}
+/* ---------- Datumsaufgabe (Original-IHK-Aufgabe) ---------- */
+function mkDatum(it){
+  const soll=parseDate(it.datum); if(!soll) return null;
+  return {kind:'num', key:tk(it.id), item:it, mod:it.modul,
+    ctx: it.situation? '<b>Situation:</b> '+esc(it.situation.slice(0,520))+(it.situation.length>520?'…':'') : '',
+    q: md(it.frage),
+    body:'<div class="numin"><input type="text" inputmode="decimal" id="ni" placeholder="TT.MM.JJJJ" autocomplete="off"></div>'+
+      '<div class="row" style="margin-top:14px"><button class="btn" id="ns">Datum prüfen</button></div>',
+    bind(root,done){
+      const inp=root.querySelector('#ni'); inp.focus();
+      const sub=()=>{ const v=parseDate(inp.value);
+        if(!v) return toast('Bitte ein Datum im Format TT.MM.JJJJ eintragen.');
+        const right=v===soll;
+        inp.disabled=true; root.querySelector('#ns').disabled=true;
+        done({right, score:right?1:0, fh:right?'Richtiges Datum':'Falsches Datum',
+          deine:right?'':v, loesung:soll, rechenweg:it.loesung, warum:it.erklaerung||''}); };
       root.querySelector('#ns').onclick=sub;
       inp.onkeydown=e=>{ if(e.key==='Enter') sub(); }; } };
 }
@@ -889,8 +968,9 @@ function mkUNum(st){
       (u.einheit?'<span class="un">'+esc(u.einheit)+'</span>':'')+'</div>'+
       '<div class="row" style="margin-top:14px"><button class="btn" id="ns">Ergebnis prüfen</button></div>',
     bind(root,done){ const inp=root.querySelector('#ni'); inp.focus();
-      const sub=()=>{ const v=parseNum(inp.value); if(isNaN(v)) return toast('Bitte eine Zahl eintragen.');
-        const tol=Math.max(u.tol||0.05, Math.abs(u.zahl)*0.0006);
+      const sub=()=>{ if(DATE_IN.test(inp.value)) return toast('Hier ist ein Betrag gefragt, kein Datum.');
+        const v=parseNum(inp.value); if(isNaN(v)) return toast('Bitte eine Zahl eintragen.');
+        const tol=Math.max(0.011, Math.abs(u.zahl)*0.000001);   // 1 Cent / 0,01 Prozentpunkt
         const right=Math.abs(v-u.zahl)<=tol, nah=!right&&Math.abs(v-u.zahl)<=Math.abs(u.zahl)*0.05;
         inp.disabled=true; root.querySelector('#ns').disabled=true;
         done({right,score:right?1:(nah?0.35:0),
@@ -979,16 +1059,17 @@ function showCombo(n){ if(matchMedia('(prefers-reduced-motion:reduce)').matches)
   document.body.appendChild(d); setTimeout(()=>d.remove(),1300); }
 function renderFB(S,r,xp){
   const box=V.querySelector('#fbbox');
-  const cls = r.task ? (r.g.keine?'part':r.score>=0.95?'ok':r.score>=0.4?'part':'bad')
+  const cls = r.task ? ((r.g.keine||r.g.selbst)?'part':r.score>=0.95?'ok':r.score>=0.4?'part':'bad')
                      : (r.right?'ok':r.score>0.3?'part':'bad');
   let h='';
   if(r.task){
     const g=r.g, it=r.it;
-    const head = g.keine?'Bewerte dich selbst'
+    const head = g.selbst?'Vergleiche mit der Musterlösung' : g.keine?'Bewerte dich selbst'
       : g.score>=0.95?'Richtig':g.score>=0.7?'Fast vollständig':g.score>=0.4?'Teilweise richtig':g.score>0?'Ansatz erkennbar':'Noch nicht';
-    h+='<div class="fh">'+ic(g.score>=0.95?'check':'alert',18)+head+(g.keine?'':' · '+Math.round(g.score*100)+' %')+'</div>';
-    if(g.keine) h+='<p>Zu dieser Aufgabe liegt in deinen Unterlagen keine offizielle Musterlösung vor. Vergleiche selbst und wert dich unten.</p>';
-    else if(it.lp&&it.lp.length){
+    h+='<div class="fh">'+ic(g.score>=0.95?'check':'alert',18)+head+((g.keine||g.selbst)?'':' · '+Math.round(g.score*100)+' %')+'</div>';
+    if(g.selbst) h+='<p>Diese Aufgabe lässt sich nicht zuverlässig über Stichwörter bewerten. Lies die offizielle Musterlösung unten und entscheide ehrlich selbst.</p>';
+    else if(g.keine) h+='<p>Zu dieser Aufgabe liegt in deinen Unterlagen keine offizielle Musterlösung vor. Vergleiche selbst und wert dich unten.</p>';
+    else if(!g.selbst&&it.lp&&it.lp.length){
       const pk=it.punkte&&/^\d/.test(String(it.punkte))?parseFloat(it.punkte):null;
       h+='<p>'+g.nF+' von '+g.need+' geforderten Punkten sicher erkannt'+(g.nP?', '+g.nP+' sinngemäß (zählen halb)':'')+
         (pk?' – rund '+(Math.round(g.score*pk*2)/2).toString().replace('.',',')+' von '+esc(String(it.punkte))+' Punkten.':'.')+'</p>';
@@ -997,7 +1078,6 @@ function renderFB(S,r,xp){
         return '<li class="'+(m===2?'hit':m===1?'part':'miss')+'"><span class="mk">'+(m===2?'✓':m===1?'≈':'○')+'</span><span>'+esc(p.titel)+
           (m===1?' <span class="tag warn">sinngemäß</span>':'')+'</span></li>';}).join('')+'</ul>'+
         '<p class="small muted" style="margin-top:9px">✓ getroffen · ≈ sinngemäß · ○ gefehlt. Anders formuliert und trotzdem richtig? Dann unten selbst werten.</p>';
-      if(it.lp_auto) h+='<p class="small muted">Die Stichwort-Erkennung wurde für diese Aufgabe automatisch aus der Musterlösung abgeleitet.</p>';
     } else {
       h+='<p>Offizielle Lösung: <b class="mono">'+esc(String(it.loesung).split('\n')[0])+'</b></p>';
       if(g.info) h+='<p class="small muted">'+esc(g.info)+'</p>';
@@ -1011,14 +1091,14 @@ function renderFB(S,r,xp){
   if(xp) h+='<p class="small" style="margin-top:10px;color:var(--ok);font-weight:700">+'+xp+' XP</p>';
   let extra='';
   if(r.rechenweg) extra+='<details class="sol" open><summary>Rechenweg der IHK</summary><div class="body">'+md(r.rechenweg)+'</div></details>';
-  if(r.task&&!r.g.keine) extra+='<details class="sol"'+(r.score>=0.95?'':' open')+'><summary>Offizielle Musterlösung im Wortlaut</summary><div class="body">'+
+  if(r.task&&!r.g.keine) extra+='<details class="sol"'+(r.score>=0.95&&!r.g.selbst?'':' open')+'><summary>Offizielle Musterlösung im Wortlaut</summary><div class="body">'+
     md(r.it.loesung)+(r.it.erklaerung?'<hr>'+md(r.it.erklaerung):'')+'</div></details>';
   if(r.task) extra+='<details class="sol"><summary>Meine Antwort</summary><div class="body">'+esc(r.ans)+'</div></details>';
   const wdh = !r.right && S.key;
   box.innerHTML='<div class="fb '+cls+'">'+h+'</div>'+extra+
     '<div class="row" style="margin-top:16px">'+
     '<button class="btn" id="nx">'+(RUN.i+1<RUN.steps.length?'Weiter':'Auswertung')+' '+ic('right',15)+'</button>'+
-    ((r.task&&(r.score<0.95))?'<button class="btn sec" id="sv1">Hatte ich richtig</button><button class="btn sec" id="sv2">War halb richtig</button>':'')+
+    ((r.task&&(r.score<0.95))?'<button class="btn sec" id="sv1">Hatte ich richtig</button><button class="btn sec" id="sv2">War halb richtig</button>'+(r.g.selbst?'<button class="btn ghost" id="sv0">War falsch</button>':''):'')+
     (S.lek!=null&&!r.right?'<button class="btn ghost sm" id="rl">Lektion nachlesen</button>':'')+'</div>'+
     (wdh?'<p class="small muted" style="margin-top:9px">'+ic('flame',12)+' Diese Einheit kommt bald zur Wiederholung.</p>':'');
   box.querySelector('#nx').onclick=()=>{ RUN.i++; render(); };
@@ -1028,6 +1108,7 @@ function renderFB(S,r,xp){
     if(v>=1){RUN.ok++;} save(); RUN.i++; render(); };
   if(s1) s1.onclick=()=>setSelf(1);
   if(s2) s2.onclick=()=>setSelf(0.6);
+  const s0=box.querySelector('#sv0'); if(s0) s0.onclick=()=>{ RUN.i++; render(); };
   const rl=box.querySelector('#rl');
   if(rl) rl.onclick=()=>{ const m=S.mod,l=S.lek; RUN=null; go('lektion',{m,i:l}); };
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1653,7 +1734,7 @@ function examSubmit(){
   const res=E.list.map(it=>{ const a=E.ans[it.id]||'';
     let g;
     if(it.ohne_loesung) g={score:0,keine:true};
-    else if(['freitext','rechnen','tabelle'].includes(it.typ)&&it.bereich===BER_IM) g=gradeText(it,a);
+    else if(['freitext','rechnen','tabelle'].includes(it.typ)&&it.bereich===BER_IM){ g=gradeText(it,a); if(g.selbst) g.keine=true; }
     else g=gradeKsk(it,a);
     if(!String(a).trim()) g={score:0,leer:true};
     const p=P.res[it.id]||{n:0,best:0}; p.n++; p.best=Math.max(p.best||0,g.score||0); p.last=Date.now(); P.res[it.id]=p;
@@ -1674,15 +1755,17 @@ function pExamRes(){
   const X=EXRES;
   const voll=X.res.filter(r=>r.g.score>=0.95).length, teil=X.res.filter(r=>r.g.score>=0.4&&r.g.score<0.95).length;
   const leer=X.res.filter(r=>r.g.leer).length;
-  const byTh={}; X.res.forEach(r=>{ const t=r.it.thema; (byTh[t]=byTh[t]||{r:0,n:0}); byTh[t].n++; byTh[t].r+=r.g.score; });
+  const selbst=X.res.filter(r=>r.g.keine&&!r.g.leer).length;
+  const byTh={}; X.res.filter(r=>!r.g.keine).forEach(r=>{ const t=r.it.thema; (byTh[t]=byTh[t]||{r:0,n:0}); byTh[t].n++; byTh[t].r+=r.g.score; });
   const th=Object.entries(byTh).map(([k,v])=>({k,q:v.r/v.n,n:v.n})).sort((a,b)=>a.q-b.q);
   const note=X.pct>=92?'1 – sehr gut':X.pct>=81?'2 – gut':X.pct>=67?'3 – befriedigend':X.pct>=50?'4 – ausreichend':X.pct>=30?'5 – mangelhaft':'6 – ungenügend';
-  const wrong=X.res.filter(r=>r.g.score<0.7).map(r=>r.it);
+  const wrong=X.res.filter(r=>!r.g.keine&&r.g.score<0.7).map(r=>r.it);
   V.innerHTML='<h1>Auswertung – '+esc(X.title)+'</h1>'+
    '<div class="card" style="margin-bottom:18px;text-align:center;padding:26px">'+
     '<div class="kpi" style="font-size:52px;color:'+(X.pct>=50?'var(--ok)':'var(--bad)')+'">'+X.pct+'<small style="font-size:13px;text-transform:none;letter-spacing:0">von 100 Punkten · '+note+'</small></div>'+
     '<span class="bar '+(X.pct>=50?'ok':'bad')+'" style="margin-top:16px"><i style="width:'+X.pct+'%"></i></span>'+
-    '<p class="small muted" style="margin:14px 0 0">Auswertung dieses Trainers auf Basis der offiziellen Lösungshinweise – keine IHK-Bewertung.</p></div>'+
+    '<p class="small muted" style="margin:14px 0 0">Auswertung dieses Trainers auf Basis der offiziellen Lösungshinweise – keine IHK-Bewertung.'+
+      (selbst?' '+selbst+' Aufgabe'+(selbst>1?'n lassen':' lässt')+' sich nicht zuverlässig automatisch bewerten und '+(selbst>1?'sind':'ist')+' in der Punktzahl nicht enthalten – prüfe sie beim Durchgehen selbst.':'')+'</p></div>'+
    '<div class="statrow"><div><b class="nums">'+voll+'</b><span>vollständig</span></div>'+
     '<div><b class="nums">'+teil+'</b><span>teilweise</span></div>'+
     '<div><b class="nums">'+leer+'</b><span>ohne Antwort</span></div>'+

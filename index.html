@@ -506,6 +506,47 @@ table.stat th{color:var(--muted);font-weight:680;font-size:11px;text-transform:u
 @keyframes instin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (min-width:860px){ .instbar{left:auto;right:20px;bottom:20px;max-width:430px} }
 @media (prefers-reduced-motion:reduce){ .instbar{animation:none} }
+
+/* ---------- Handy: Überläufe verhindern ---------- */
+@media (max-width:560px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .hd{padding:0 14px;gap:9px}
+  .brand{font-size:13px;gap:8px;min-width:0;flex:1 1 auto;overflow:hidden}
+  .brand .lg{width:28px;height:28px;flex:none}
+  .brand>span:not(.lg){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .hdr-right{gap:5px;flex:none;margin-left:6px}
+  .ico{width:32px;height:32px}
+  .hstat{gap:5px}
+  .pill{font-size:11px;padding:3px 7px;gap:3px}
+  /* lange Etiketten dürfen umbrechen statt die Seite zu sprengen */
+  .tag{white-space:normal;overflow-wrap:anywhere;max-width:100%;text-align:left}
+  /* breite Tabellen bekommen ihren eigenen Schiebebereich */
+  table.stat,table.calc{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.stat{font-size:13px}
+  table.stat th,table.stat td{padding:9px 7px;white-space:nowrap}
+  table.stat th:first-child,table.stat td:first-child{white-space:normal;min-width:140px}
+  pre,code{overflow-x:auto;max-width:100%}
+  h1{font-size:23px}
+  .kpi{font-size:26px}
+  img,svg,video{max-width:100%}
+}
+  /* Zahl und Einheit gehören zusammen */
+  .kpi,.reifehead b,.pill,.mmin{white-space:nowrap}
+  .reifehead{gap:12px}
+  .reifehead>span:first-child{min-width:0}
+  /* Missionszeile: Minutenangabe unter den Text statt daneben */
+  .mrow{align-items:flex-start;padding:12px 13px;gap:11px;flex-wrap:wrap}
+  .mb b{font-size:14px}
+  .mi{order:1;margin-top:1px}
+  .mb{order:2;flex:1 1 0;min-width:0}
+  .mmin{order:3;flex:1 1 100%;text-align:right;margin-top:2px}
+}
+@media (max-width:380px){
+  .hd{padding:0 11px;gap:7px}
+  .brand{font-size:12.5px}
+  .pill{font-size:10.5px;padding:2px 6px}
+  nav.tab button{font-size:9.5px}
+}
 body.locked{overflow:hidden}
 body.locked>*:not(.lock){display:none !important}
 .lock{position:fixed;inset:0;z-index:999;display:grid;place-items:center;padding:24px;
@@ -570,7 +611,7 @@ body.locked>*:not(.lock){display:none !important}
 <main class="wrap" id="view" tabindex="-1"></main>
 <nav class="tab" id="navTab" aria-label="Hauptnavigation"></nav>
 
-<script>window.__V="202609161418";</script>
+<script>window.__V="202610141230";</script>
 <script>
 /* Entsperren und Inhalte laden.
    Die Prüfungsinhalte liegen verschlüsselt in data.bin; der Schlüssel entsteht

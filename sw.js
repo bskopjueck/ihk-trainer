@@ -1,7 +1,7 @@
 /* IHK-Trainer – Service Worker
    App-Shell offline verfügbar halten, Lernstand-Sync immer über das Netz. */
-const V = 'ihk-v202609161418';
-const SHELL = ['./', './app.js?v=202609161418', './data.bin', './manifest.webmanifest', './icon-192.png', './icon-512.png',
+const V = 'ihk-v202610141230';
+const SHELL = ['./', './app.js?v=202610141230', './data.bin', './manifest.webmanifest', './icon-192.png', './icon-512.png',
                './icon-192-maskable.png', './icon-512-maskable.png',
                './apple-touch-icon.png', './favicon-32.png'];
 
